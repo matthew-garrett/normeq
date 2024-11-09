@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-
+import { PrismaClient } from "@prisma/client";
 // Add export for allowed methods
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
+
+const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,6 +17,13 @@ export async function POST(req: NextRequest) {
 
     const data = await req.json();
     console.log("Received data from Zapier:", data);
+
+    // Save the data to the database
+    await prisma.zapierData.create({
+      data: {
+        data: data, // Assumes data is in JSON format
+      },
+    });
 
     return new NextResponse(
       JSON.stringify({ message: "Webhook received successfully", data }),
