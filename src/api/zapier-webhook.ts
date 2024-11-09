@@ -1,7 +1,9 @@
-export default async function handler(req: any, res: any) {
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     // Access the data sent from Zapier
-    const data = req.body;
+    const data: any = req.body;
 
     // Log the received data
     console.log("Received data from Zapier:", data);
