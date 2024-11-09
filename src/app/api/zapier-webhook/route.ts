@@ -4,26 +4,54 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 
-// Define allowed methods
 export async function POST(req: NextRequest) {
   try {
+    // Add CORS headers
+    const headers = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
     const data = await req.json();
     console.log("Received data from Zapier:", data);
-    return NextResponse.json(
-      { message: "Webhook received successfully", data },
-      { status: 200 }
+
+    return new NextResponse(
+      JSON.stringify({ message: "Webhook received successfully", data }),
+      {
+        status: 200,
+        headers: headers,
+      }
     );
   } catch (error) {
     console.error("Error processing webhook:", error);
-    return NextResponse.json(
-      { error: "Failed to process webhook" },
-      { status: 400 }
+    // Add more detailed error message
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    return new NextResponse(
+      JSON.stringify({
+        error: "Failed to process webhook",
+        details: errorMessage,
+      }),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
     );
   }
 }
 
-// Add OPTIONS method handler for CORS preflight requests
 export async function OPTIONS(req: NextRequest) {
-  console.log("OPTIONS request received", req);
-  return NextResponse.json({}, { status: 200 });
+  // Add CORS headers to OPTIONS response
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
 }
