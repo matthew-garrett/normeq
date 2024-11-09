@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
 
 export async function OPTIONS(req: NextRequest) {
   // Add CORS headers to OPTIONS response
+  console.log("OPTIONS request received", req);
   return new NextResponse(null, {
     status: 204,
     headers: {
