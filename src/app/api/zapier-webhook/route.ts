@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Add export for allowed methods
+export const dynamic = "force-dynamic";
+export const runtime = "edge";
+
+// Define allowed methods
 export async function POST(req: NextRequest) {
   try {
-    // Access the data sent from Zapier
     const data = await req.json();
-
-    // Log the received data
     console.log("Received data from Zapier:", data);
-
-    // Return success response
     return NextResponse.json(
       { message: "Webhook received successfully", data },
       { status: 200 }
@@ -20,4 +20,9 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
+}
+
+// Add OPTIONS method handler for CORS preflight requests
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json({}, { status: 200 });
 }
