@@ -24,5 +24,6 @@ export async function POST(req: NextRequest) {
 
 // Add OPTIONS method handler for CORS preflight requests
 export async function OPTIONS(req: NextRequest) {
+  console.log("OPTIONS request received", req);
   return NextResponse.json({}, { status: 200 });
 }
