@@ -6,7 +6,9 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/get-zapier-data");
+      const response = await fetch(
+        "https://normeq.vercel.app/api/get-zapier-data"
+      );
       const result = await response.json();
       setData(result);
     };
