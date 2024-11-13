@@ -1,67 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-// Add export for allowed methods
-export const dynamic = "force-dynamic";
-export const runtime = "edge";
 
 const prisma = new PrismaClient();
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    // Add CORS headers
-    const headers = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    };
+    const rawData = await request.json(); // Parse incoming JSON rawData from Zapier
 
-    const data = await req.json();
-    console.log("Received data from Zapier:", data);
+    console.log(rawData); // Log the data directly since it's already awaited
 
-    // Save the data to the database
+    // Save the data to the SQLite database
     await prisma.zapierData.create({
       data: {
-        data: data, // Assumes data is in JSON format
+        data: JSON.stringify(rawData), // Convert JSON to string before storing
       },
     });
 
-    return new NextResponse(
-      JSON.stringify({ message: "Webhook received successfully", data }),
-      {
-        status: 200,
-        headers: headers,
-      }
-    );
+    return NextResponse.json({ message: "Data saved successfully" });
   } catch (error) {
-    console.error("Error processing webhook:", error);
-    // Add more detailed error message
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    return new NextResponse(
-      JSON.stringify({
-        error: "Failed to process webhook",
-        details: errorMessage,
-      }),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
-    );
+    console.error("Error saving data:", error);
+    return NextResponse.json({ error: "Error saving data" }, { status: 500 });
   }
-}
-
-export async function OPTIONS(req: NextRequest) {
-  // Add CORS headers to OPTIONS response
-  console.log("OPTIONS request received", req);
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
 }

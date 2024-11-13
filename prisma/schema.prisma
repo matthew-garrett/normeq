@@ -5,16 +5,16 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "sqlite"         // Specifies SQLite as the database provider
+  url      = "file:./dev.db"   // Specifies the location of the SQLite database file
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" // Specifies that Prisma should generate the Prisma Client for JavaScript/TypeScript
 }
 
 model ZapierData {
   id        Int      @id @default(autoincrement())
-  data      String   // Changed from Json to String
+  data      String   
   timestamp DateTime @default(now())
 }
